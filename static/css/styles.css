@@ -1,0 +1,214 @@
+html {
+    background: linear-gradient(#a89984, #32302f) fixed;
+    padding-bottom: 50px;
+    font-family: "Lucida Console", "Lucida Sans Typewriter", monaco, "Bitstream Vera Sans Mono", monospace;
+}
+
+h1 {
+    font-size: 36px;
+    color: #458588;
+}
+
+h1, h2, h3, h4, h5 {
+    text-align: center;
+    margin: 0.67em;
+}
+
+table {
+    margin: auto;
+}
+
+p {
+    color: #fabd2f;
+}
+
+body {
+    background-color: #282828;
+
+
+    max-width: 750px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 30px;
+
+    color: #eee;
+    border-radius: 20px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #555;
+}
+
+header {
+    /*color: #83a598;*/
+}
+
+img {
+    border-radius: 5px;
+}
+
+.result {
+
+    width: 250px !important;
+    font-size: 2em;
+    position: absolute;
+    bottom: 0;
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+    display: none;
+    opacity: 0.9;
+    text-align: center;
+
+}
+
+#result_wrong {
+
+    background-color: #cc241d;
+}
+
+#result_correct {
+
+    background-color: #8ec07c;
+}
+
+.btn-link-github {
+    text-decoration: none;
+    background-color: #b16286;
+    border-radius: 5px;
+    border-style: solid;
+    border-width: 5px;
+    border-color: #b16286;
+    color: #fff;
+}
+
+
+.btn-selection {
+    font-size: 0.75em;
+
+    background-color: #fff;
+    border-radius: 5px;
+    border-style: solid;
+    border-color: #fff;
+
+    display: none;
+    cursor: pointer;
+}
+
+
+.card {
+    background-color: #ebdbb2;
+}
+
+#JavaScript {
+    color: #fcdc00;
+}
+
+#Python {
+    color: #2b5b84;
+}
+
+#C\# {
+    color: #A075DB;
+}
+
+#Shell {
+    color: #2A3438;
+}
+
+#Java {
+    color: #C33;
+}
+
+#Objective-C {
+    color: #069AFA;
+}
+
+#Scala {
+    color: #DC322F;
+}
+
+#Swift {
+    color: #FF6A32;
+}
+
+#C {
+    color: #7eb4df;
+}
+
+#C\+\+ {
+    color: #7eb4df;
+}
+
+#PHP {
+    color: #8892BF;
+}
+
+#MatLab {
+    color: #c05708;
+}
+
+#Go {
+    color: #7fd5ea;
+}
+
+
+#Perl {
+    color: #61C5BA;
+}
+
+#TypeScript {
+    color: #3178c6;
+}
+
+#HTML {
+    color: #ee6534;
+}
+
+#Ruby {
+    color: #CC342D;
+}
+
+#Vim\ script {
+    color: #007f00;
+}
+
+#language_btn_container {
+    border-spacing: 10px;
+}
+
+#score {
+    position: relative;
+    color: #8ec07c;
+}
+
+
+h4 {
+    color: #fabd2f;
+}
+
+#avatar {
+    width: 250px;
+}
+
+main {
+    margin: 20px;
+}
+
+hr {
+    margin: 10px;
+}
+
+i {
+    font-size: 3.5em;
+}
+
+pre {
+    padding: 1em;
+    margin: 1em;
+    white-space: pre-wrap;
+}
+
+code {
+    text-align: center;
+    border-radius: 5px;
+    overflow-wrap: break-word;
+}

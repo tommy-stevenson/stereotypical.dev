@@ -1,0 +1,51 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <title>
+        {% block title %}
+        {% endblock %}
+    </title>
+
+    <link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+          integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.14.0/devicon.min.css">
+    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
+    <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+
+
+</head>
+
+{% block score %}
+
+{% endblock %}
+
+
+<body>
+{% block body %}
+
+{% endblock %}
+
+<center>
+    <code>Donate Bitcoin: bc1qjuwam0ql6zl2rw5z92sla6km935x5rks835f0d</code>
+</center>
+<center>
+    <code>
+        GitHub: <a href="https://github.com/tommy-stevenson/stereotypical.dev" target="_blank">
+        https://github.com/tommy-stevenson/stereotypical.dev
+    </a>
+    </code>
+</center>
+<br>
+
+</body>
+
+
+
+{% block js_page %}
+{% endblock %}
+
+</html>

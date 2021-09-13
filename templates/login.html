@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Login - Stereotypical Developers
+{% endblock %}
+
+
+
+{% block body %}
+
+    <header>
+        <h1>Stereotypical Developers</h1>
+        <h2>Guess the developer's programming language</h2>
+        <table style="margin: auto;">
+            <tbody>
+            <tr>
+                <td><a href="{% static 'images/wojak_dev.png' %}"><img src="{% static 'images/wojak_dev.png' %}"
+                                                                       alt="Meme Example" style="width: 350px;"></a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </header>
+    <main>
+
+        <hr>
+
+        <p>
+            Silly game to guess the programming language a given developer uses most based on their GitHub profile
+            picture. All in good fun, no malice intended. I love all developers! ;)
+        </p>
+
+
+        <p>
+            I would like to filter out GitHub's default randomly generated profile pics, but the Canvas API doesn't
+            allow the use of cross-origin images. If you have a solution to this problem, submit a pull request on <a
+                href="https://github.com/tommy-stevenson/stereotypical.dev" target="_blank">this project's repo</a>!
+        </p>
+
+        <p>
+            Authentication with GitHub below is required, which uses GitHub's <em>OAuth Web Application Flow</em>. Click
+            <a
+                    href="https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps#web-application-flow">here</a>
+            for details on how that works.
+        </p>
+
+
+        <br>
+
+        <center>
+            <a href="https://github.com/login/oauth/authorize?client_id=e096dff0303cb577ae29&redirect_uri=http://127.0.0.1:8000"
+               class="btn-link-github">
+                <i class="fab fa-github-square fa-lg"></i>
+                Sign in with GitHub
+            </a>
+        </center>
+
+    </main>
+{% endblock %}

@@ -1,0 +1,395 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Stereotypical Developers
+{% endblock %}
+
+{% block body %}
+
+
+    <header>
+        <h1>Stereotypical Developers</h1>
+        <h2>Guess the developer's programming language</h2>
+        <table>
+            <tbody>
+            <tr>
+                <td style="position: relative">
+                    <div id="result_wrong" class="result">
+                        Wrong!
+                    </div>
+
+                    <div id="result_correct" class="result">
+                        Correct!
+                    </div>
+                    <img id="avatar" class="card-img-top" src="{% static 'images/wojak.png' %}" width="250" height="250"
+                         alt="Profile Picture">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </header>
+
+
+    <main>
+
+
+        <hr>
+        <h4>What programming language do they mostly use?</h4>
+
+        <table id="language_btn_container">
+            <tbody>
+            <tr>
+
+
+                <td id="C#" class="btn-selection">
+
+                    <i class="devicon-csharp-plain"></i>
+                </td>
+
+                <td id="Shell" class="btn-selection">
+
+                    <i class="devicon-bash-plain"></i>
+                </td>
+
+                <td id="Java" class="btn-selection">
+
+                    <i class="devicon-java-plain"></i>
+                </td>
+
+                <td id="Objective-C" class="btn-selection">
+
+                    <i class="devicon-objectivec-plain"></i>
+                </td>
+                <td id="Swift" class="btn-selection">
+
+                    <i class="devicon-swift-plain"></i>
+                </td>
+
+                <td id="Scala" class="btn-selection">
+
+                    <i class="devicon-scala-plain"></i>
+                </td>
+
+                <td id="JavaScript" class="btn-selection">
+
+
+                    <i class="devicon-javascript-plain"></i>
+
+                </td>
+
+                <td id="PHP" class="btn-selection">
+
+                    <i class="devicon-php-plain"></i>
+                </td>
+
+                <td id="C" class="btn-selection">
+
+                    <i class="devicon-c-plain"></i>
+                </td>
+
+                <td id="MatLab" class="btn-selection">
+
+                    <i class="devicon-matlab-plain"></i>
+
+                </td>
+
+                <td id="Go" class="btn-selection">
+
+                    <i class="devicon-go-original-wordmark"></i>
+                </td>
+
+                <td id="C++" class="btn-selection">
+
+                    <i class="devicon-cplusplus-plain"></i>
+                </td>
+
+                <td id="Perl" class="btn-selection">
+
+                    <i class="devicon-perl-plain"></i>
+                </td>
+
+                <td id="TypeScript" class="btn-selection">
+                    <i class="devicon-typescript-plain"></i>
+                </td>
+
+                <td id="HTML" class="btn-selection">
+
+                    <i class="devicon-html5-plain"></i>
+                </td>
+
+                <td id="Ruby" class="btn-selection">
+
+                    <i class="devicon-ruby-plain"></i>
+                </td>
+
+                <td id="Vim script" class="btn-selection">
+
+                    <i class="devicon-vim-plain"></i>
+                </td>
+
+
+                <td id="Python" class="btn-selection">
+
+                    <i class="devicon-python-plain"></i>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+
+        <h1 id="score">0</h1>
+
+
+    </main>
+
+{% endblock %}
+
+
+
+{% block js_page %}
+    <script type="application/javascript">
+
+        let avatarUrl;
+        let reposUrl;
+        let userRepos;
+        let repoLang;
+        let langMap = new Map();
+        let maxLanguage;
+        let points = 0;
+        let pointModifier = 5;
+
+        let code;
+
+        let accessToken = '{{ access_token }}';
+
+
+        const MAXUSERID = 999999;
+        const LANG = [
+            "JavaScript",
+            "Python",
+            "C#",
+            "Shell",
+            "Java",
+            "Objective-C",
+            "PHP",
+            "C",
+            "MatLab",
+            "Go",
+            "C++",
+            "TypeScript",
+            "Ruby"
+        ];
+
+
+        function getRandomInt(max) {
+            return Math.floor(Math.random() * max);
+
+        }
+
+        function getMaxLanguage() {
+
+            if (langMap.size > 0) {
+                maxLanguage = [...langMap.entries()].reduce((a, e) => e[1] > a[1] ? e : a);
+                if (!LANG.includes(maxLanguage[0])) {
+                    console.debug('Langauge not supported!');
+                    langMap = new Map();
+                }
+            }
+
+        }
+
+
+        function getUserLanguages() {
+
+            if (userRepos !== null && userRepos !== undefined) {
+                for (let repo = 0; repo < userRepos.length; repo++) {
+                    repoLang = userRepos[repo].language;
+
+                    if (repoLang !== null && repoLang !== undefined) {
+
+                        langMap.set(repoLang, (langMap.get(repoLang) || 0) + 1);
+
+                    } else {
+                        console.debug("repoLang null or undefined!");
+                    }
+                }
+            }
+
+            getMaxLanguage();
+
+        }
+
+        async function getUserRepos() {
+
+            langMap = new Map();
+
+
+            let h = new Headers();
+            h.append('Authorization', `Token ${accessToken}`)
+
+            if (reposUrl !== null && reposUrl !== undefined) {
+                await fetch(
+                    reposUrl,
+                    {
+                        headers: h,
+                    }
+                ).then(async function (response) {
+                    if (response.status === 200) {
+                        userRepos = await response.json();
+                        getUserLanguages();
+
+                    }
+                })
+                    .catch(async function (error) {
+                        console.debug(error);
+                    });
+            }
+
+
+        }
+
+        async function getNewUserData() {
+
+            let userData;
+
+            let h = new Headers();
+            h.append('Authorization', `Token ${accessToken}`)
+
+            // We get a random int and hope it's a valid user id
+            await fetch(
+                'https://api.github.com/user/' + getRandomInt(MAXUSERID),
+                {
+                    headers: h,
+                }
+            ).then(async function (response) {
+                console.debug(response);
+                if (response.status === 200) {
+                    userData = await response.json();
+
+                    avatarUrl = userData.avatar_url;
+                    reposUrl = userData.repos_url;
+
+
+                }
+            })
+                .catch(function (error) {
+                    console.debug(error);
+                });
+
+        }
+
+
+        async function go() {
+
+            // Reset user info
+            avatarUrl = null;
+            reposUrl = null;
+            userRepos = null;
+            repoLang = null;
+            pointModifier = 5;
+
+            // Hide language buttons
+            [...document.getElementsByClassName('btn-selection')].forEach(
+                (element, index, array) => {
+                    element.style.display = 'none';
+                }
+            );
+
+            await getNewUserData();
+            await getUserRepos();
+
+            // If the user has repos with supported languages
+            if (langMap.size > 0) {
+
+                resetResult();
+                document.getElementById("avatar").src = avatarUrl;
+
+                let revealedBtnCount = 0;
+                let revealedBtns = [];
+
+                while (revealedBtnCount < 4) {
+
+                    let r = getRandomInt(LANG.length);
+
+                    // Check if the random language is already revealed or if it is the maxLanguage
+                    if (LANG[r] !== maxLanguage[0] && !revealedBtns.includes(r)) {
+                        document.getElementById(LANG[r]).style.display = 'table-cell';
+                        revealedBtns.push(r);
+                        revealedBtnCount += 1;
+                    }
+                }
+
+                document.getElementById(maxLanguage[0]).style.display = 'table-cell';
+
+
+            } else {
+
+                // In the event that we don't find a suitable user, start over
+                await go();
+            }
+        }
+
+
+        let btns = document.getElementsByClassName("btn-selection");
+
+        let resultClearTimeout;
+        let result;
+
+        function resetResult() {
+            // Clear timeout to prevent us from stepping on our feet
+            clearTimeout(resultClearTimeout);
+
+
+            [...document.getElementsByClassName('result')].forEach(
+                (element, index, array) => {
+                    element.style.display = 'none';
+                }
+            );
+        }
+
+
+        function showResult(id) {
+            // id is either 'correct' or 'wrong'
+
+            resetResult();
+
+
+            result = document.getElementById('result_' + id);
+
+            result.style.display = 'block';
+
+            // Hide result in 1.5 seconds
+            resultClearTimeout = setTimeout(function () {
+                result.style.display = 'none';
+            }, 1500);
+
+            // Update score counter
+            document.getElementById('score').innerText = points;
+
+
+        }
+
+        for (let i = 0; i < btns.length; i++) {
+            btns[i].addEventListener("click", function () {
+
+                // For every wrong answer we decrease the pointModifier by 1 so
+                // that if you get it right on the first try, you get 5 points.
+                if (btns[i].id === maxLanguage[0]) {
+                    points += pointModifier;
+                    showResult('correct');
+                    go();
+                } else {
+                    if (pointModifier > 0) {
+                        pointModifier -= 1;
+                    }
+                    showResult('wrong');
+                }
+            });
+        }
+
+        go();
+
+
+    </script>
+{% endblock %}
