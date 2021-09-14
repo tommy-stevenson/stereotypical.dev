@@ -16,6 +16,9 @@ class FacesHomepageView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
+        context['redirect_url'] = REDIRECT_URL
+        context['client_id'] = CLIENT_ID
+
         access_token = self.request.session.get('access_token', '')
         context['access_token'] = access_token
 
@@ -47,3 +50,11 @@ class FacesHomepageView(TemplateView):
 
 class LoginView(TemplateView):
     template_name = 'login.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context['redirect_url'] = REDIRECT_URL
+        context['client_id'] = CLIENT_ID
+
+        return context
