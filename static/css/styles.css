@@ -6,7 +6,8 @@ html {
 
 h1 {
     font-size: 36px;
-    color: #458588;
+    color: #d65d0e;
+    /*color: #458588;*/
 }
 
 h1, h2, h3, h4, h5 {
@@ -93,10 +94,6 @@ img {
     cursor: pointer;
 }
 
-
-.card {
-    background-color: #ebdbb2;
-}
 
 #JavaScript {
     color: #fcdc00;
@@ -195,6 +192,7 @@ main {
 
 hr {
     margin: 10px;
+
 }
 
 i {
@@ -211,4 +209,8 @@ code {
     text-align: center;
     border-radius: 5px;
     overflow-wrap: break-word;
+}
+
+a {
+    color: #458588;
 }
