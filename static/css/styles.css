@@ -81,6 +81,11 @@ img {
     color: #fff;
 }
 
+.btn-link-github:hover {
+    background-color: #d3869b;
+    border-color: #d3869b;
+    color: #fff !important;
+}
 
 .btn-selection {
     font-size: 0.75em;
@@ -213,4 +218,8 @@ code {
 
 a {
     color: #458588;
+}
+
+a:hover {
+    color: #83a598;
 }
