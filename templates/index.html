@@ -141,6 +141,9 @@
         <h1 id="score">0</h1>
 
 
+        <img id="avatar_test" src="" width="250" height="250" style="display: none;">
+
+
     </main>
 
 {% endblock %}
@@ -162,6 +165,8 @@
         let code;
 
         let accessToken = '{{ access_token }}';
+
+        let colorSet = new Set();
 
 
         const MAXUSERID = 999999;
@@ -222,13 +227,16 @@
 
         async function getUserRepos() {
 
-            langMap = new Map();
-
-
-            let h = new Headers();
-            h.append('Authorization', `Token ${accessToken}`)
 
             if (reposUrl !== null && reposUrl !== undefined) {
+
+
+                langMap = new Map();
+
+
+                let h = new Headers();
+                h.append('Authorization', `Token ${accessToken}`);
+
                 await fetch(
                     reposUrl,
                     {
@@ -266,10 +274,11 @@
                 console.debug(response);
                 if (response.status === 200) {
                     userData = await response.json();
+                    console.debug(userData);
 
-                    avatarUrl = userData.avatar_url;
+                    {#avatarUrl = userData.avatar_url;#}
+                    avatarUrl = '{{ redirect_url }}' + '/avatar/' + userData.id;
                     reposUrl = userData.repos_url;
-
 
                 }
             })
@@ -297,6 +306,14 @@
             );
 
             await getNewUserData();
+            await isIdenticon();
+            {#await processNewUser();#}
+
+        }
+
+
+        async function processNewUser() {
+
             await getUserRepos();
 
             // If the user has repos with supported languages
@@ -389,6 +406,65 @@
         }
 
         go();
+
+
+        async function isIdenticon() {
+
+            let blockSize = 5,
+                defaultRGB = {r: 0, g: 0, b: 0},
+                canvas = document.createElement('canvas'),
+                context = canvas.getContext && canvas.getContext('2d'),
+                data, width, height,
+                i = -4,
+                length,
+                count = 0;
+
+
+            loadImage()
+                .then(async function (img) {
+                    height = canvas.height = img.naturalHeight || img.offsetHeight || img.height;
+                    width = canvas.width = img.naturalWidth || img.offsetWidth || img.width;
+
+                    context.drawImage(img, 0, 0);
+
+                    data = context.getImageData(0, 0, width, height);
+
+                    console.debug(data);
+
+                    length = data.data.length;
+
+                    while ((i += blockSize * 4) < length) {
+                        ++count;
+                        colorSet.add(data.data[i]);
+                        colorSet.add(data.data[i + 1]);
+                        colorSet.add(data.data[i + 2]);
+                    }
+
+                    console.debug(colorSet);
+
+                    if (colorSet.size < 10) {
+                        avatarUrl = null;
+                        reposUrl = null;
+                    }
+
+                    await processNewUser();
+                })
+                .catch(async function (error) {
+
+                    console.debug('loadImage failed');
+
+                    await processNewUser();
+                });
+
+
+        }
+
+        const loadImage = () => new Promise((resolve, reject) => {
+            let imgEl = document.getElementById('avatar_test');
+            imgEl.addEventListener('load', () => resolve(imgEl));
+            imgEl.addEventListener('error', (err) => reject(err));
+            imgEl.src = avatarUrl;
+        });
 
 
     </script>
