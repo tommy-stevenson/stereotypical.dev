@@ -123,6 +123,11 @@
                     <i class="devicon-ruby-plain"></i>
                 </td>
 
+                <td id="Rust" class="btn-selection">
+
+                    <i class="devicon-rust-plain"></i>
+                </td>
+
                 <td id="Vim script" class="btn-selection">
 
                     <i class="devicon-vim-plain"></i>
@@ -183,7 +188,8 @@
             "Go",
             "C++",
             "TypeScript",
-            "Ruby"
+            "Ruby",
+            "Rust"
         ];
 
 
@@ -306,7 +312,12 @@
             );
 
             await getNewUserData();
-            await isIdenticon();
+
+            if (avatarUrl !== null && avatarUrl !== undefined) {
+                await isIdenticon();
+            } else {
+                await go();
+            }
             {#await processNewUser();#}
 
         }
@@ -410,6 +421,8 @@
 
         async function isIdenticon() {
 
+            colorSet = new Set();
+
             let blockSize = 5,
                 defaultRGB = {r: 0, g: 0, b: 0},
                 canvas = document.createElement('canvas'),
@@ -445,9 +458,12 @@
                     if (colorSet.size < 10) {
                         avatarUrl = null;
                         reposUrl = null;
-                    }
 
-                    await processNewUser();
+                        await go();
+                    } else {
+
+                        await processNewUser();
+                    }
                 })
                 .catch(async function (error) {
 
