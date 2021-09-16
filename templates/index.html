@@ -407,7 +407,7 @@
             // Hide result in 1.5 seconds
             resultClearTimeout = setTimeout(function () {
                 result.style.display = 'none';
-            }, 1000);
+            }, 500);
 
             // Update score counter
             document.getElementById('score').innerText = points;
@@ -433,7 +433,7 @@
                         }
                     );
 
-                    setTimeout(presentNextUser, 200);
+                    setTimeout(presentNextUser, 500);
                 } else {
                     if (pointModifier > 0) {
                         pointModifier -= 1;
