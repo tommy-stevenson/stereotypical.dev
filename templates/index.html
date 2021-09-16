@@ -123,16 +123,14 @@
                     <i class="devicon-ruby-plain"></i>
                 </td>
 
-                <td id="Rust" class="btn-selection">
-
-                    <i class="devicon-rust-plain"></i>
-                </td>
-
                 <td id="Vim script" class="btn-selection">
 
                     <i class="devicon-vim-plain"></i>
                 </td>
+                <td id="Rust" class="btn-selection">
 
+                    <i class="devicon-rust-plain"></i>
+                </td>
 
                 <td id="Python" class="btn-selection">
 
@@ -173,6 +171,10 @@
 
         let colorSet = new Set();
 
+        let userArray = [];
+
+        let userCount = 0;
+
 
         const MAXUSERID = 999999;
         const LANG = [
@@ -184,7 +186,6 @@
             "Objective-C",
             "PHP",
             "C",
-            "MatLab",
             "Go",
             "C++",
             "TypeScript",
@@ -205,6 +206,16 @@
                 if (!LANG.includes(maxLanguage[0])) {
                     console.debug('Langauge not supported!');
                     langMap = new Map();
+                } else {
+
+                    // Skip popular languages every now and then to keep things interesting
+                    if (maxLanguage[0] === 'JavaScript' && Math.random() < 0.09) {
+                        langMap = new Map();
+                    } else if (maxLanguage[0] === 'Python' && Math.random() < 0.06) {
+                        langMap = new Map();
+                    } else if (maxLanguage[0] === 'Java' && Math.random() < 0.02) {
+                        langMap = new Map();
+                    }
                 }
             }
 
@@ -218,11 +229,7 @@
                     repoLang = userRepos[repo].language;
 
                     if (repoLang !== null && repoLang !== undefined) {
-
                         langMap.set(repoLang, (langMap.get(repoLang) || 0) + 1);
-
-                    } else {
-                        console.debug("repoLang null or undefined!");
                     }
                 }
             }
@@ -235,9 +242,6 @@
 
 
             if (reposUrl !== null && reposUrl !== undefined) {
-
-
-                langMap = new Map();
 
 
                 let h = new Headers();
@@ -282,7 +286,6 @@
                     userData = await response.json();
                     console.debug(userData);
 
-                    {#avatarUrl = userData.avatar_url;#}
                     avatarUrl = '{{ redirect_url }}' + '/avatar/' + userData.id;
                     reposUrl = userData.repos_url;
 
@@ -304,21 +307,48 @@
             repoLang = null;
             pointModifier = 5;
 
-            // Hide language buttons
-            [...document.getElementsByClassName('btn-selection')].forEach(
-                (element, index, array) => {
-                    element.style.display = 'none';
-                }
-            );
+            langMap = new Map();
 
             await getNewUserData();
-
             if (avatarUrl !== null && avatarUrl !== undefined) {
                 await isIdenticon();
             } else {
                 await go();
             }
-            {#await processNewUser();#}
+
+        }
+
+
+        function presentNextUser() {
+
+
+            if (userArray.length > userCount) {
+
+                let nextUser = userArray[userCount];
+
+                document.getElementById("avatar").src = nextUser.avatarUrl;
+
+                let revealedBtnCount = 0;
+                let revealedBtns = [];
+
+                while (revealedBtnCount < 4) {
+
+                    let r = getRandomInt(LANG.length);
+
+                    // Check if the random language is already revealed or if it is the maxLanguage
+                    if (LANG[r] !== nextUser.maxLanguage && !revealedBtns.includes(r)) {
+                        document.getElementById(LANG[r]).style.display = 'table-cell';
+                        revealedBtns.push(r);
+                        revealedBtnCount += 1;
+                    }
+                }
+
+                document.getElementById(nextUser.maxLanguage).style.display = 'table-cell';
+
+            } else {
+
+                setTimeout(presentNextUser, 100);
+            }
 
         }
 
@@ -330,32 +360,19 @@
             // If the user has repos with supported languages
             if (langMap.size > 0) {
 
-                resetResult();
-                document.getElementById("avatar").src = avatarUrl;
+                userArray.push({
+                    avatarUrl: avatarUrl,
+                    maxLanguage: maxLanguage[0]
+                });
 
-                let revealedBtnCount = 0;
-                let revealedBtns = [];
-
-                while (revealedBtnCount < 4) {
-
-                    let r = getRandomInt(LANG.length);
-
-                    // Check if the random language is already revealed or if it is the maxLanguage
-                    if (LANG[r] !== maxLanguage[0] && !revealedBtns.includes(r)) {
-                        document.getElementById(LANG[r]).style.display = 'table-cell';
-                        revealedBtns.push(r);
-                        revealedBtnCount += 1;
-                    }
+                // If this is the first time successfully processing a user, show them
+                if (userArray.length === 1) {
+                    presentNextUser();
                 }
-
-                document.getElementById(maxLanguage[0]).style.display = 'table-cell';
-
-
-            } else {
-
-                // In the event that we don't find a suitable user, start over
-                await go();
             }
+
+            // In the event that we don't find a suitable user, start over
+            await go();
         }
 
 
@@ -390,7 +407,7 @@
             // Hide result in 1.5 seconds
             resultClearTimeout = setTimeout(function () {
                 result.style.display = 'none';
-            }, 1500);
+            }, 1000);
 
             // Update score counter
             document.getElementById('score').innerText = points;
@@ -403,10 +420,20 @@
 
                 // For every wrong answer we decrease the pointModifier by 1 so
                 // that if you get it right on the first try, you get 5 points.
-                if (btns[i].id === maxLanguage[0]) {
+                if (btns[i].id === userArray[userCount].maxLanguage) {
                     points += pointModifier;
                     showResult('correct');
-                    go();
+
+                    userCount += 1;
+
+                    // Hide language buttons
+                    [...document.getElementsByClassName('btn-selection')].forEach(
+                        (element, index, array) => {
+                            element.style.display = 'none';
+                        }
+                    );
+
+                    setTimeout(presentNextUser, 200);
                 } else {
                     if (pointModifier > 0) {
                         pointModifier -= 1;
@@ -458,11 +485,11 @@
                     if (colorSet.size < 10) {
                         avatarUrl = null;
                         reposUrl = null;
-
                         await go();
                     } else {
 
                         await processNewUser();
+
                     }
                 })
                 .catch(async function (error) {
